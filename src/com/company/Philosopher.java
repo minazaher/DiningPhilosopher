@@ -1,67 +1,77 @@
 package com.company;
 
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Philosopher implements Runnable {
-        Chopstick leftChopstick;
-        Chopstick rightChopstick;
-        private final int number;
-        boolean IsEven = false;
+public class Philosopher extends Thread {
 
-        int times_eaten = 0;
+    boolean IsEven = false;
+    int times_eaten = 0;
+    private final Chopstick[] chopsticks;
+    private final int ID;
 
-        public Philosopher(boolean IsEven,int num, Chopstick left, Chopstick right) {
-            this.IsEven = IsEven;
-            number = num;
-            leftChopstick = left;
-            rightChopstick = right;
-        }
 
-        @Override
-        public void run() {
-            for (int i = 0; i < 1; i++) {
-                performAction(" thinks for " , this.number);
-                if (this.IsEven){
-                    try {
-                        rightChopstick.grabChopstick((this.number),1);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                    try {
-                        leftChopstick.grabChopstick((this.number),0);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-                else {
-                    try {
-                        leftChopstick.grabChopstick((this.number),0);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
+    public Philosopher(int ID, Chopstick[] chopsticks) {
+        this.ID = ID;
+        this.chopsticks = chopsticks;
+    }
+
+
+
+    @Override
+    public void run() {
+        for (int i = 0; i < 50; i++)
+        {
+            System.out.println("philosopher " + ID + " thinking");
+            try {
+                Thread.sleep(new Random().nextInt(100) + 50);
+
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println("Philosopher " + ID + " hungry.");
+            if (this.getRight(ID).semaphore.availablePermits() == 1 && this.getLeft(ID).semaphore.availablePermits() == 1) {
                 try {
-                    rightChopstick.grabChopstick((this.number),1);
+                    chopsticks[ID].pick();
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
-                performAction(" eats for ", this.number);
-                leftChopstick.dropChopstick((this.number),0);
-                rightChopstick.dropChopstick((this.number),1);
-                System.out.println("This philosopher "+ (this.number) +" has eaten for "+this.times_eaten +" times");
+                System.out.println("Philosopher" + ID + "  takes the chopstick: " + ID);
+                try {
+                    chopsticks[(ID + 1) % 5].pick();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                System.out.println("Philosopher" + ID + "  takes the chopstick: " + (ID+1)%5);
+                System.out.println("Philosophers " + ID + " eating");
+                try {
+                    Thread.sleep(new Random().nextInt(100) + 50);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                chopsticks[ID].leave(ID, true);// release right chopstick
+                chopsticks[(ID + 1) % 5].leave(ID, false);//release left chopstick
+                this.times_eaten++;
+                try {
+                    Thread.sleep(new Random().nextInt(100) + 50);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            else
+                System.out.println("chopStick for philosopher "+ ID + "is in use");
             }
         }
 
-
-        void performAction(String action, int p) {
-            int waitTime = ThreadLocalRandom.current().nextInt(0,
-                    1000);
-            if (action.equals(" eats for ")){
-                this.times_eaten ++;
-            }
-            System.out.println("Philosopher " + (p) + action
-                    + waitTime + " ms");
+        public Chopstick getRight ( int myName){
+            return chopsticks[myName];
         }
+
+        public Chopstick getLeft ( int myName){
+            return chopsticks[(myName + 1) % 5];
+        }
+
 
     }
+
 

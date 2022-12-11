@@ -1,34 +1,34 @@
 package com.company;
 
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class DinningPhilosophers {
-    static int no_of_philosophers = 5;
-    static Philosopher[] philosophers = new Philosopher[no_of_philosophers];
-    static Chopstick[] chopsticks = new Chopstick[no_of_philosophers];
-    public static ExecutorService executor = Executors.newFixedThreadPool(no_of_philosophers);
-
+    public static Chopstick[] chopsticks;
     public static void main(String[] args) throws InterruptedException {
+        Philosopher philosopher[];
 
-        for (int i = 0; i < no_of_philosophers; i++) {
-            chopsticks[i] = new Chopstick();
-        }
-        for (int i = 0; i < no_of_philosophers; i++) {
-            if (i % 2 == 0)
-                philosophers[i] = new Philosopher(true,i, chopsticks[i],chopsticks[(i + 1) % no_of_philosophers]);
-            else
-                philosophers[i] = new Philosopher(false,i, chopsticks[i], chopsticks[(i + 1) % no_of_philosophers]);
-            executor.execute(philosophers[i]);
-        }
+        //Create an array of five Semaphores object reference Handles
+        chopsticks=new Chopstick[5];
 
-        while (executor.isShutdown()) {
-            for (Philosopher p : philosophers) {
-                System.out.println(p.times_eaten);
-            }
+        //Create five Semaphore objects and assign to the array
+        for (int i=0; i<5;i++){
+            chopsticks[i] =new Chopstick(); //Semaphore initial value=1
+
+        }
+        //Create an array of five philosopher thread object reference handles
+        philosopher = new Philosopher[5];
+
+        //Create and initiate five philosopher Thread objects
+        for(int i=0;i<5;i++)
+        {
+            philosopher[i] = new Philosopher(i,chopsticks);
+            philosopher[i].start();
+        }
+        for(int i=0;i<5;i++)
+        {
+            philosopher[i].join();
+            System.out.println("Philosopher Number " + i + "has eaten " + philosopher[i].times_eaten);
         }
     }
-
-
 }
-
-
