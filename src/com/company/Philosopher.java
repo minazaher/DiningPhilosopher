@@ -15,7 +15,11 @@ public class Philosopher extends Thread {
         this.ID = ID;
         this.chopsticks = chopsticks;
     }
-
+    public Philosopher(int ID, Chopstick [] chopsticks, boolean isEven){
+        this.ID = ID;
+        this.chopsticks = chopsticks;
+        this.IsEven = isEven;
+    }
 
 
     @Override
@@ -31,18 +35,36 @@ public class Philosopher extends Thread {
             }
             System.out.println("Philosopher " + ID + " hungry.");
             if (this.getRight(ID).semaphore.availablePermits() == 1 && this.getLeft(ID).semaphore.availablePermits() == 1) {
-                try {
-                    chopsticks[ID].pick();
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+                if(IsEven) {
+                    try {
+                        chopsticks[ID].pick();
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                    System.out.println("Philosopher" + ID + "  takes the chopstick: " + ID);
+                    try {
+                        chopsticks[(ID + 1) % 5].pick();
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                    System.out.println("Philosopher " + ID + "  takes the chopstick: " + (ID + 1) % 5);
                 }
-                System.out.println("Philosopher" + ID + "  takes the chopstick: " + ID);
-                try {
-                    chopsticks[(ID + 1) % 5].pick();
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+                else{
+                    try {
+                        chopsticks[(ID + 1) % 5].pick();
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                    System.out.println("Philosopher" + ID + "  takes the chopstick: " + (ID + 1) % 5);
+
+                    try {
+                        chopsticks[ID].pick();
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                    System.out.println("Philosopher " + ID + "  takes the chopstick: " + ID);
                 }
-                System.out.println("Philosopher" + ID + "  takes the chopstick: " + (ID+1)%5);
+
                 System.out.println("Philosophers " + ID + " eating");
                 try {
                     Thread.sleep(new Random().nextInt(100) + 50);
@@ -59,7 +81,7 @@ public class Philosopher extends Thread {
                 }
             }
             else
-                System.out.println("chopStick for philosopher "+ ID + "is in use");
+                System.out.println("chopStick for philosopher "+ ID + " is in use");
             }
         }
 

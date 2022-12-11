@@ -22,9 +22,16 @@ public class DinningPhilosophers {
         //Create and initiate five philosopher Thread objects
         for(int i=0;i<5;i++)
         {
-            philosopher[i] = new Philosopher(i,chopsticks);
+            if(i % 2 == 0 ){
+                philosopher[i] = new Philosopher(i,chopsticks, true);
+            }
+            else{
+                philosopher[i] = new Philosopher(i,chopsticks, false);
+
+            }
             philosopher[i].start();
         }
+
         for(int i=0;i<5;i++)
         {
             philosopher[i].join();
