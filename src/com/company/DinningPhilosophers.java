@@ -91,6 +91,10 @@ public class DinningPhilosophers {
                     + waitTime + " ms");
         }
     }
+    public void tryGet(Chopstick c1, Chopstick c2){
+        c1.semaphore.tryAcquire();
+        c2.semaphore.tryAcquire();
+    }
 
 }
 
