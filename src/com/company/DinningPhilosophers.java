@@ -27,17 +27,14 @@ public class DinningPhilosophers {
                 philosopher[i] = new Philosopher(i,chopsticks, false);
 
             }
-            philosopher[i].start();
+            executor.execute(philosopher[i]);
         }
 
-        for(int i=0;i<5;i++)
-        {
-            philosopher[i].join();
-        }
 
-        for(int i=0;i<5;i++)
-        {
-                System.out.println("Philosopher Number " + i + " has eaten " + philosopher[i].getTimes_eaten());
-        }
+
+//        for(int i=0;i<5;i++)
+//        {
+//                System.out.println("Philosopher Number " + i + " has eaten " + philosopher[i].getTimes_eaten());
+//        }
     }
 }

@@ -83,9 +83,14 @@ public class Philosopher extends Thread {
             }
             else
                 System.out.println("chopStick for philosopher "+ ID + " is in use");
+            if (i == 49)
+                  System.out.println("Philosopher Number " + this.ID + " has eaten " + this.getTimes_eaten());
 
-            }
+
+
         }
+        }
+
 
         public Chopstick getRight ( int id){
             return chopsticks[id];
