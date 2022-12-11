@@ -6,19 +6,20 @@ import java.util.concurrent.ThreadLocalRandom;
 public class Philosopher extends Thread {
 
     boolean IsEven = false;
-    int times_eaten = 0;
+    private int times_eaten = 0;
+
     private final Chopstick[] chopsticks;
     private final int ID;
 
 
-    public Philosopher(int ID, Chopstick[] chopsticks) {
-        this.ID = ID;
-        this.chopsticks = chopsticks;
-    }
     public Philosopher(int ID, Chopstick [] chopsticks, boolean isEven){
         this.ID = ID;
         this.chopsticks = chopsticks;
         this.IsEven = isEven;
+    }
+
+    public int getTimes_eaten() {
+        return times_eaten;
     }
 
 
@@ -34,14 +35,14 @@ public class Philosopher extends Thread {
                 e.printStackTrace();
             }
             System.out.println("Philosopher " + ID + " hungry.");
-            if (this.getRight(ID).semaphore.availablePermits() == 1 && this.getLeft(ID).semaphore.availablePermits() == 1) {
+            if (canEat()) {
                 if(IsEven) {
                     try {
                         chopsticks[ID].pick();
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
-                    System.out.println("Philosopher" + ID + "  takes the chopstick: " + ID);
+                    System.out.println("Philosopher " + ID + "  takes the chopstick: " + ID);
                     try {
                         chopsticks[(ID + 1) % 5].pick();
                     } catch (InterruptedException e) {
@@ -55,7 +56,7 @@ public class Philosopher extends Thread {
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
-                    System.out.println("Philosopher" + ID + "  takes the chopstick: " + (ID + 1) % 5);
+                    System.out.println("Philosopher " + ID + "  takes the chopstick: " + (ID + 1) % 5);
 
                     try {
                         chopsticks[ID].pick();
@@ -82,18 +83,21 @@ public class Philosopher extends Thread {
             }
             else
                 System.out.println("chopStick for philosopher "+ ID + " is in use");
+
             }
         }
 
-        public Chopstick getRight ( int myName){
-            return chopsticks[myName];
+        public Chopstick getRight ( int id){
+            return chopsticks[id];
         }
 
-        public Chopstick getLeft ( int myName){
-            return chopsticks[(myName + 1) % 5];
+        public Chopstick getLeft ( int id){
+            return chopsticks[(id + 1) % 5];
         }
 
-
-    }
+        public boolean canEat(){
+            return (this.getRight(ID).semaphore.availablePermits() == 1 && this.getLeft(ID).semaphore.availablePermits() == 1);
+        }
+}
 
 

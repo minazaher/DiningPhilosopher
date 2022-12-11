@@ -5,21 +5,19 @@ import java.util.concurrent.Executors;
 
 public class DinningPhilosophers {
     public static Chopstick[] chopsticks;
+
+    static ExecutorService executor = Executors.newFixedThreadPool(5);
+
     public static void main(String[] args) throws InterruptedException {
         Philosopher philosopher[];
-
-        //Create an array of five Semaphores object reference Handles
         chopsticks=new Chopstick[5];
 
-        //Create five Semaphore objects and assign to the array
         for (int i=0; i<5;i++){
-            chopsticks[i] =new Chopstick(); //Semaphore initial value=1
-
+            chopsticks[i] =new Chopstick();
         }
-        //Create an array of five philosopher thread object reference handles
+
         philosopher = new Philosopher[5];
 
-        //Create and initiate five philosopher Thread objects
         for(int i=0;i<5;i++)
         {
             if(i % 2 == 0 ){
@@ -35,7 +33,7 @@ public class DinningPhilosophers {
         for(int i=0;i<5;i++)
         {
             philosopher[i].join();
-            System.out.println("Philosopher Number " + i + "has eaten " + philosopher[i].times_eaten);
+            System.out.println("Philosopher Number " + i + " has eaten " + philosopher[i].getTimes_eaten());
         }
     }
 }
