@@ -1,15 +1,12 @@
-package com.company;
+package com.company.NotRealWorldApplication;
 
 import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class Philosopher extends Thread {
-
+    private final int ID;
+    private final Chopstick[] chopsticks;
     boolean IsEven = false;
     private int times_eaten = 0;
-
-    private final Chopstick[] chopsticks;
-    private final int ID;
 
 
     public Philosopher(int ID, Chopstick [] chopsticks, boolean isEven){
@@ -82,12 +79,7 @@ public class Philosopher extends Thread {
                 }
             }
             else
-                System.out.println("chopStick for philosopher "+ ID + " is in use");
-            if (i == 49)
-                  System.out.println("Philosopher Number " + this.ID + " has eaten " + this.getTimes_eaten());
-
-
-
+                System.out.println("Chopstick for philosopher "+ ID + " is in use");
         }
         }
 
