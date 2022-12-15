@@ -30,8 +30,6 @@ public class DinningPhilosophers {
             executor.execute(philosopher[i]);
         }
 
-
-
 //        for(int i=0;i<5;i++)
 //        {
 //                System.out.println("Philosopher Number " + i + " has eaten " + philosopher[i].getTimes_eaten());
